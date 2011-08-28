@@ -1,0 +1,34 @@
+/* TODO: Update this for x-browser css, no px values, but ems instead */
+.awesome {
+  background: #222 url("../img/button_overlay.png") repeat-x;
+  display: inline-block;
+  padding: 5px 10px 6px;
+  color: #fff;
+  text-decoration: none;
+  -webkit-border-radius: 5px;
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.50);
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  position: relative;
+  cursor: pointer;
+}
+.awesome,
+.awesome:visited {
+  font-size: 1.2em;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+  margin: 0 auto;
+  color: bleu;
+  margin-top: 4px;
+}
+.awesome:hover {
+  background-color: #111;
+  color: #fff;
+  -webkit-transition: all 0.4s ease-out;
+}
+.large.awesome,
+.large.awesome:visited {
+  font-size: 1.4em;
+  padding: 8px 14px 9px;
+}

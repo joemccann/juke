@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <meta name="google-site-verification" content="put-your-string-here" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content='<%= title %>'>
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta names="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<% if(debugging) {%>
+		<!-- Follow the order of imports in style.styl file -->
+    <link rel='stylesheet' href='/css/normalize.css' />
+    <link rel='stylesheet' href='/css/main.css' />
+
+    <link rel='stylesheet' href='/css/mixins/animations.css' />
+    <link rel='stylesheet' href='/css/mixins/buttons.css' />
+		<link rel='stylesheet' href='/css/mixins/form.css' />
+		<link rel='stylesheet' href='/css/mixins/loading.css' />
+
+		<link rel='stylesheet' href='/css/mixins/dashboard.css' />
+		<link rel='stylesheet' href='/css/mixins/register.css' />
+		<link rel='stylesheet' href='/css/mixins/logout.css' />
+
+		<link rel='stylesheet' href='/css/320.css' />
+		<link rel='stylesheet' href='/css/480.css' />
+		<link rel='stylesheet' href='/css/640.css' />
+		<link rel='stylesheet' href='/css/768.css' />
+		<% } %>
+		<% if(!debugging) {%>
+    <link rel="stylesheet" href="css/style-<%- version %>.min.css">
+		<% } %>
+
+    <!-- Powered by:
+
+    '||''''|                                          
+     ||  .   ... ...... ...... ..   ....  ....  ....  
+     ||''|    '|..'  ||'  ||||' ''.|...||||. ' ||. '  
+     ||        .|.   ||    |||    ||     . '|... '|.. 
+    .||.....|.|  ||. ||...'.||.    '|...'|'..|'|'..|'  
+                     ||
+                     ||  
+    -->
+
+  </head>
+  <% if(typeof bodyClass !== 'undefined') { %><body class="<%- bodyClass %>">
+  <%}%>
+  <% if(typeof bodyClass === 'undefined') { %><body>
+  <%}%>
+  <noscript>It's 2011, please enable JavaScript or install a modern browser.</noscript>
+    <%- body %>
+  <!--<script src="http://localhost:8080/target/target-script-min.js"></script>-->
+	<% if(debugging) { %>
+  <script src="/js/jquery-1.6.1.min.js"></script>
+  <script src="/js/code.js"></script><%}%>
+	<% if(!debugging) { %>
+  <script src="/js/jquery-1.6.1.min.js"></script>
+  <script src="/js/code-<%- version %>.min.js"></script>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-XXXXXXX-XX']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script><%}%>
+  </body>
+</html>

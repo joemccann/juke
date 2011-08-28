@@ -1,0 +1,12 @@
+.register h2 {
+  line-height: 1.2;
+}
+.success_container {
+  width: 66%;
+}
+.successful_registration h1 {
+  line-height: 1.4;
+}
+.successful_registration p {
+  margin: 20px 0;
+}

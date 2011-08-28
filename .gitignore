@@ -1,0 +1,8 @@
+.DS_Store
+*.sock
+*.pid
+pids/*
+logs/*
+public/audio/*
+*.mp3
+*.ogg

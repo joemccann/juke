@@ -1,0 +1,70 @@
+<% if(auth.isLegit) { %>
+	<%- partial('logout') %>
+<%}%>
+<div id="main" class="dashboard">
+
+	<% if(auth.isLegit) { %>
+		
+		<h2>Cool, you're logged in.</h2>
+
+	<%}%>
+	<% if(!auth.isLegit) { %>
+		<div class="shadowbox">
+
+	  <h2 class="adminHeader">Please Login</h2>
+
+	  <form id="adminLogin" action="/dashboard" method="POST"> 
+
+	    <div class="field required">
+
+	      <div class="label" id="for_username">
+
+	        <label for="username" class="content">
+	          <span class="innerlabel">Username</span>
+	          <span class="help">(Required)</span>
+	        </label>
+
+	        <input type="text" name="username" id="username" required placeholder="joe" value="" />
+
+	      </div>
+  
+	    </div>
+
+	    <div class="field required">
+
+	      <div class="label" id="for_password">
+
+	        <label for="password" class="content">
+	          <span class="innerlabel">Password</span>
+	          <span class="help">(Required)</span>
+	        </label>
+
+	        <input type="password" id="password" required name="password" value="" />
+
+	      </div>
+  
+	    </div>
+
+			<% if(typeof auth.message != 'undefined' && !auth.isLegit) { %>
+	    <div class="error_container">
+				<p class="error"><%= auth.message %></p>
+			</div>
+			<%}%>
+			
+			<div class="field button_container">
+	      <input type="submit" id="auth_user" class="large awesome" value="Login"></input>
+	    </div>
+	
+	    <p class="field form_copy">
+        Don't have an account? <a href="/register">Create One →</a>
+    	</p>
+
+	    <p class="field form_copy">
+        <a href="/forgot">Forgot your password? →</a>
+    	</p>
+
+	  </form> 
+		</div>
+	<%}%>
+
+</div> <!-- end #main-->

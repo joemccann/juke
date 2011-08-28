@@ -1,0 +1,71 @@
+<div id="main" class="register">
+
+    <div class="shadowbox">
+
+      <h2 class="adminHeader">Create Your Account</h2>
+      
+      <form id="adminLogin" action="/register" method="POST"> 
+
+        <div class="field required">
+
+          <div class="label" id="for_username">
+
+            <label for="username" class="content">
+              <span class="innerlabel">Username</span>
+              <span class="help">(Required)</span>
+            </label>
+
+            <input type="text" name="username" id="username" required placeholder="joe" value="" />
+
+          </div>
+  
+        </div>
+
+        <div class="field required">
+
+          <div class="label" id="for_username">
+
+            <label for="username" class="content">
+              <span class="innerlabel">Email Address</span>
+              <span class="help">(Required)</span>
+            </label>
+
+            <input type="email" name="email" id="email" required placeholder="joe@subprint.com" value="" />
+
+          </div>
+  
+        </div>
+
+      <div class="field required">
+
+        <div class="label" id="for_password">
+
+          <label for="password" class="content">
+            <span class="innerlabel">Password</span>
+            <span class="help">(Required)</span>
+          </label>
+
+          <input type="password" id="password" required name="password" value="" />
+
+        </div>
+  
+      </div>
+
+      <% if(typeof create.message !== 'undefined' && !create.isLegit) { %>
+      <div class="error_container">
+        <p class="error"><%= create.message %></p>
+      </div>
+      <%}%>
+      
+      <div class="field button_container">
+        <input type="submit" id="auth_user" class="large awesome" value="Register"></input>
+      </div>
+  
+      <p class="field form_copy">
+        Have an account? <a href="/dashboard">Go To Login Page →</a>
+      </p>
+
+    </form> 
+    </div>
+
+</div>

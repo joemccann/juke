@@ -1,0 +1,22 @@
+{
+  "VERSION": "0.0.1",
+  "JSHINT_OPTS": { "browser": true },
+  "JAVASCRIPT": {
+    "DIST_DIR": "./public/js",
+    "code": [ "./public/js/jquery-1.6.1.min.js", "./public/js/code.js"]
+  },
+  "CSS": {
+    "DIST_DIR": "./public/css",
+    "style": ["./public/css/style.css"]
+  },
+	"PORT" : 80,
+  "DEBUG": true,
+	"LOCALHOST": true,
+  "IMAGE_PREFIX_DEBUG": "/img/",
+  "IMAGE_PREFIX_PRODUCTION": "http://cdn.your-website.com/",
+  "STYLUS_FILE": "/public/css/style.styl",
+	"URLS": {
+		"local": "http://localhost/",
+		"verification" : "http://your-website.com/verify/"
+	}
+}
