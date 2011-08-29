@@ -101,13 +101,21 @@ Now, restart the app, `node app.js`, and navigate to `http://localhost/`.
 
 
 <br><br>
-If you want to actually run this on a production server there are two things you should do. First, start and stop the app.  This will update the stylus file and image prefix for production (we should change this so you can just call the method inside the app.js file, but lazy for now):
+If you want to actually run this on a production server there are a few things you should do. 
 
 
-<pre>node app.js</pre>
+First, change the `"LOCALHOST"` and `"DEBUG"` values to `false` and update your CDN values and the verification link to your live site URLs.
 
 
-<pre>CTRL+C</pre>
+
+Next, start and stop the node app.  This will update the stylus file and image prefix for production (we should change this so you can just call the method inside the app.js file, but lazy for now):
+
+Start (and capture process id):
+<pre>sudo node app.js &; echo $! > node.pid</pre>
+
+
+Stop:
+<pre>cat node.pid | sudo xargs kill && rm -f node.pid</pre>
 
 
 
@@ -120,8 +128,8 @@ smoosh -c app.json
 </pre>
 
 
-
-Next, change the `"LOCALHOST"` value to `false` and update your CDN values and the verification link to your live site URLs.
+<br>
+Now, your app is primed and ready for production.
 
 <br><br>
 For email configuration, open the `email.js` file in the `utils` directory.
