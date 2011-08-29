@@ -96,11 +96,10 @@ Before you restart the app, you'll need to compress/concat the files with smoosh
 This will create you minified and concatenated CSS and JS files.
 
 
-<br>
 Now, restart the app, `node app.js`, and navigate to `http://localhost/`.
 
 
-<br><br>
+<br>
 If you want to actually run this on a production server there are a few things you should do. 
 
 
