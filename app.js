@@ -7,6 +7,7 @@ var express = require('express')
   , colors = require('colors')
   , pwhash = require('password-hash')
   , step = require('step')
+  , stylus = require('stylus')
   , emailer = require(__dirname + '/utils/email.js')
   , debug
   , redisClient
@@ -40,7 +41,7 @@ if(debug){
 var app = module.exports = express.createServer();
 
 // Change these at your will in the related file.
-var titles = require(__dirname+ '/utils/strings.js')
+var titles = require(__dirname+ '/utils/strings.js').titles
 
 // Configuration
 
@@ -54,7 +55,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: "Linearity isn’t the norm in the world around us, non-linearity is...", store: new RedisStore, cookie: { maxAge: 30000} })); // 30 minutes
+  app.use(express.session({ secret: "Linearity isn’t the norm in the world around us, non-linearity is...", store: new RedisStore, cookie: { maxAge: 60000*5} })); // 5 minutes
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -507,34 +508,45 @@ function sendRegistrationEmail(res,email,username){
 
 // Method that reads in the main stylus file and rewrites it with either the cdn or local (debug) prefix
 // for background images.
-function setStylusImagePrefix(){
+// @param {String}  the path to the production (single) stylus file
+// TODO:  Expose this to command line?  smoosh?
+function setStylusImagePrefix(productionFile){
   
-  fs.readFile(__dirname+appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
-    
-    if(err) console.log(err)
-    else{
-      
-      // must be: imagePrefix="../img" or imagePrefix="http://cdn.foo.com/" in the stylus file, unless
-      // you want to improve the regex.
-       var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
-                ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
-                : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
-       
-       // write the file with the proper prefix.
-       fs.writeFile(__dirname+appConfig.STYLUS_FILE, d, function(err,data){
+  // We need to compile the main stylus file for production
+  var str = require('fs').readFileSync(productionFile, 'utf8');
 
+  stylus(str)
+    .set('filename', productionFile)
+    .render(function(err, css){
+      if (err) throw err
+      // console.log(css)
+
+      fs.readFile(__dirname+appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
+
+        // Now we update the path of the image prefix, local or CDN...
         if(err) console.log(err)
         else{
-          console.log("Stylus file written successfully written for %s environment.", app.settings.env)
-        } 
+          // must be: imagePrefix="../img" or imagePrefix="http://cdn.foo.com/" in the stylus file.
+           var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
+                    ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
+                    : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
+       
+           // write the file with the proper prefix.
+           fs.writeFile(__dirname + appConfig.STYLUS_FILE, d, function(err,data){
+            if(err) console.log(err)
+            else{
+              console.log("Stylus file written successfully written for %s environment.", debug ? 'debugging' : 'production')
+              // console.log(d)
+            } 
+           }) // end writeFile()
 
-       }) // end writeFile()
+        } // end readFile else
 
-    } // end else readfile error
+      }) // end readFile()
 
-  }) // end readFile()
+  }) // end stylus.render()
 
-} // end setStylusImagePrefix()
+}
 
 // return a random string of length 16
 function randomString(){
@@ -573,7 +585,10 @@ function initRedis(){
 
 function init(){
   
-  setStylusImagePrefix()
+  // This should be the filename that is the single stylus file for production.
+  var productionStylusFile = __dirname + "/public/css/style.styl"
+  
+  setStylusImagePrefix( productionStylusFile )
   
 }
 

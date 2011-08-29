@@ -100,8 +100,19 @@ This will create you minified and concatenated CSS and JS files.
 Now, restart the app, `node app.js`, and navigate to `http://localhost/`.
 
 
+<br><br>
+If you want to actually run this on a production server there are two things you should do. First, start and stop the app.  This will update the stylus file and image prefix for production (we should change this so you can just call the method inside the app.js file, but lazy for now):
 
-If you want to actually run this on a production server there are two things you should do. First, compress/concat with smoosh:
+
+<pre>node app.js</pre>
+
+
+<pre>CTRL+C</pre>
+
+
+
+Now that the proper asset/image prefix is set, let's smoosh it.
+
 
 
 <pre>
@@ -112,7 +123,7 @@ smoosh -c app.json
 
 Next, change the `"LOCALHOST"` value to `false` and update your CDN values and the verification link to your live site URLs.
 
-
+<br><br>
 For email configuration, open the `email.js` file in the `utils` directory.
 
 

@@ -14,7 +14,7 @@
 	"LOCALHOST": true,
   "IMAGE_PREFIX_DEBUG": "/img/",
   "IMAGE_PREFIX_PRODUCTION": "http://cdn.your-website.com/",
-  "STYLUS_FILE": "/public/css/style.styl",
+  "STYLUS_FILE": "/public/css/params.styl",
 	"URLS": {
 		"local": "http://localhost/",
 		"verification" : "http://your-website.com/verify/"

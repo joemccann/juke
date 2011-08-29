@@ -1,4 +1,4 @@
-export.titles = {
+exports.titles = {
   defaultDashboardPage: "Dashboard Page",
   defaultRegistrationPage: "Register for Your Account",
   redisErrorUsername: "Registration Page Set Username - Redis Error",
