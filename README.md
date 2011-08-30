@@ -90,7 +90,7 @@ Before you restart the app, you'll need to compress/concat the files with smoosh
 <pre>smoosh -c app.json</pre>
 
 
-This will create you minified and concatenated CSS and JS files.
+This will create minified and concatenated CSS and JS files.
 
 
 Now, restart the app, `node app.js`, and navigate to `http://localhost/`.
