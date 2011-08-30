@@ -1,24 +1,17 @@
 # Juke
 
 
-Flossy way to build a user registration app/component with Express, Redis and Stylus.  It's also a decent starting point for any Express app.
+A flossy way to build a user registration app/component with Express, Redis and Stylus.  
+
+Juke is also a great boilerplate for building an Express app.
 
 
 ## Requirements
 
 
 - Redis
-- Node.js 0.4.11+
-	- Express
-	- EJS 
-	- Redis
-	- Stylus
-	- Smoosh
-	- Colors
-	- Nodemailer
-	- Node-Password-Hash
+- Node.js 0.4.11
 - Google Apps Account/SMTP Access (or your own SMTP server) 
-
 
 
 ## How-To #
@@ -40,9 +33,10 @@ To start the redis-server type:
 redis-server
 </pre>
 
-This will use default config.
-In order to specify a config file use `redis-server /path/to/redis.conf'`
+This will use the default config.
 
+
+In order to specify a custom config file use `redis-server /path/to/redis.conf'`
 
 
 To enter the redis CLI type:
@@ -71,6 +65,9 @@ To fire up your Juke joint, type:
 <pre>
 node app.js
 </pre>
+
+
+### Development Environments #
 
 
 By default, the `app.json` file has configuration options set for debugging, on `localhost` at port `5050`.  This can all be configured by simply changing the values.
@@ -106,7 +103,6 @@ If you want to actually run this on a production server there are a few things y
 First, change the `"LOCALHOST"` and `"DEBUG"` values to `false` and update your CDN values and the verification link to your live site URLs.
 
 
-
 Next, start and stop the node app.  This will update the stylus file and image prefix for production (we should change this so you can just call the method inside the app.js file, but lazy for now):
 
 Start (and capture process id):
@@ -117,9 +113,7 @@ Stop:
 <pre>cat node.pid | sudo xargs kill && rm -f node.pid</pre>
 
 
-
 Now that the proper asset/image prefix is set, let's smoosh it.
-
 
 
 <pre>
@@ -127,15 +121,16 @@ smoosh -c app.json
 </pre>
 
 
-<br>
 Now, your app is primed and ready for production.
 
-<br><br>
+
+### Email Setup #
+
+
 For email configuration, open the `email.js` file in the `utils` directory.
 
 
 There is a configuration hash there.  Update it with your credentials.
-
 
 
 ## Redis Keys
@@ -166,11 +161,10 @@ MIT
 ## TODO #
 
 
-- Create package.json
 - Validate incoming inputs.
 - Lots moar (see the inline code comments)
 
 
-## CREDITS #
+## Credits #
 
 Background pattern for the `<body>` tag: [dinpattern.com](http://dinpattern.com/category/patterns/)
