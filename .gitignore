@@ -6,3 +6,4 @@ logs/*
 public/audio/*
 *.mp3
 *.ogg
+node_modules/

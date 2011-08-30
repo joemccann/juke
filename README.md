@@ -57,11 +57,11 @@ Now you can `GET` and `SET` keys and values.  To remove all keys type `FLUSHALL`
 
 
 <br>
-Grab the necessary modules (this is a shitty hack, but works for now):
+Grab the necessary modules from the `package.json` file:
 
 
 <pre>
-npm install express stylus ejs redis password-hash colors nodemailer && sudo npm install smoosh -g
+npm install -d
 </pre>
 
 

@@ -6,7 +6,6 @@ var express = require('express')
   , redis = require('redis')
   , colors = require('colors')
   , pwhash = require('password-hash')
-  , step = require('step')
   , stylus = require('stylus')
   , emailer = require(__dirname + '/utils/email.js')
   , debug
@@ -14,6 +13,7 @@ var express = require('express')
   , RedisStore
   , isRedisConnected = false
 
+// Grab the app's configuration.  This is defined in app.json (maybe rename this?)
 var appConfig = JSON.parse(fs.readFileSync('./app.json', 'UTF-8'))
 
 // Set the debug flag FOR THE FUTURE!!!ONE1!
@@ -38,14 +38,15 @@ if(debug){
 
 }
 
-var app = module.exports = express.createServer();
-
 // Change these at your will in the related file.
+// TODO:  Eventually add error messages to strings.js so nothing is hardcoded.
 var titles = require(__dirname+ '/utils/strings.js').titles
 
-// Configuration
-
+// Initialize Redis connection
 initRedis()
+
+// Configuration
+var app = module.exports = express.createServer()
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -512,44 +513,49 @@ function sendRegistrationEmail(res,email,username){
 // TODO:  Expose this to command line?  smoosh?
 function setStylusImagePrefix(productionFile){
 
+  fs.readFile(__dirname+appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
 
-        fs.readFile(__dirname+appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
+    // Now we update the path of the image prefix, local or CDN...
+    if(err) throw err
+    else{
+      // must be: imagePrefix="../img" or imagePrefix="http://cdn.foo.com/" in the stylus file.
+       var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
+                ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
+                : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
 
-          // Now we update the path of the image prefix, local or CDN...
-          if(err) console.log(err)
-          else{
-            // must be: imagePrefix="../img" or imagePrefix="http://cdn.foo.com/" in the stylus file.
-             var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
-                      ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
-                      : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
-       
-             // write the file with the proper prefix.
-             fs.writeFile(__dirname + appConfig.STYLUS_FILE, d, function(err,data){
-              if(err) console.log(err)
-              else{
-                console.log("Stylus file written successfully written for %s environment.", debug ? 'debugging' : 'production')
-                // console.log(d)
+       // write the file with the proper prefix.
+       fs.writeFile(__dirname + appConfig.STYLUS_FILE, d, function(err,data){
+        if(err) throw err
+        else{
+          
+          console.log(appConfig.STYLUS_FILE + " file images prefixes written successfully written for %s environment.", debug ? 'debugging' : 'production')
+          // console.log(d)
 
-                // We need to compile the main stylus file for production
-                var str = fs.readFileSync(productionFile, 'utf8');
+          // We need to compile the main stylus file for production
+          var str = fs.readFileSync(productionFile, 'utf8');
 
-                stylus(str)
-                  .set('filename', productionFile)
-                  .render(function(err, css){
-                    if (err) throw err
-                    fs.writeFile( productionFile.replace('.styl', '.css'), css, function(err, data){
+          stylus(str)
+            .set('filename', productionFile)
+            .render(function(err, css){
+              if (err) throw err
+              fs.writeFile( productionFile.replace('.styl', '.css'), css, function(err, data){
+                
+                if(err) throw err
+                else{
+                  console.log(productionFile.replace('.styl', '.css') + " file written successfully written for %s environment.", debug ? 'debugging' : 'production')
+                }
 
-                    }) // end write style.css file
+              }) // end write style.css file
 
-                }) // end stylus.render()
+          }) // end stylus.render()
 
-              } // end writeFile else 
-              
-             }) // end writeFile()
+        } // end writeFile else 
+      
+       }) // end writeFile()
 
-          } // end readFile else
+    } // end readFile else
 
-        }) // end readFile()
+  }) // end readFile()
 
 }
 
