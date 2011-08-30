@@ -55,6 +55,7 @@
     <%- body %>
   <!--<script src="http://localhost:8080/target/target-script-min.js"></script>-->
 	<% if(debugging) { %>
+  <script type="text/javascript">window.debugging = true</script>
   <script src="/js/jquery-1.6.1.min.js"></script>
   <script src="/js/code.js"></script><%}%>
 	<% if(!debugging) { %>
