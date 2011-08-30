@@ -67,8 +67,7 @@ app.configure('development', function(){
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-  // app.use(express.errorHandler()); 
+  app.use(express.errorHandler()); 
 });
 
 // Routes
@@ -597,6 +596,7 @@ function initRedis(){
 function init(){
   
   // This should be the filename that is the single stylus file for production.
+  // Maybe add this to the app.json config?
   var productionStylusFile = __dirname + "/public/css/style.styl"
   
   setStylusImagePrefix( productionStylusFile )
