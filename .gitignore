@@ -7,3 +7,4 @@ public/audio/*
 *.mp3
 *.ogg
 node_modules/
+dump.rdb
