@@ -8,3 +8,7 @@ exports.titles = {
   emailErrorSend: "Error Sending Email - SMTP Error",
   successRegistrationPage: "Registration Page - Success"
 }
+
+exports.foo = {
+  bar: "baz"
+}

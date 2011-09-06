@@ -518,9 +518,9 @@ function setStylusImagePrefix(productionFile){
     if(err) throw err
     else{
       // must be: imagePrefix="../img" or imagePrefix="http://cdn.foo.com/" in the stylus file.
-       var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
-                ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
-                : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
+      var d = data.replace(/imagePrefix=[A-Za-z0-9-:"'\.\/\\]+/i, debug 
+                            ? 'imagePrefix="' + appConfig.IMAGE_PREFIX_DEBUG + '"'  
+                            : 'imagePrefix="' + appConfig.IMAGE_PREFIX_PRODUCTION + '"')
 
        // write the file with the proper prefix.
        fs.writeFile(__dirname + appConfig.STYLUS_FILE, d, function(err,data){
@@ -536,10 +536,14 @@ function setStylusImagePrefix(productionFile){
           stylus(str)
             .set('filename', productionFile)
             .render(function(err, css){
+              
               if (err) throw err
+
+              // Write the style.css file...
               fs.writeFile( productionFile.replace('.styl', '.css'), css, function(err, data){
                 
                 if(err) throw err
+                
                 else{
                   console.log(productionFile.replace('.styl', '.css') + " file written successfully written for %s environment.", debug ? 'debugging' : 'production')
                 }
