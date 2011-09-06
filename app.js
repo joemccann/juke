@@ -8,6 +8,7 @@ var express = require('express')
   , pwhash = require('password-hash')
   , stylus = require('stylus')
   , emailer = require(__dirname + '/utils/email.js')
+  , strings = require(__dirname + '/utils/strings.js')
   , debug
   , redisClient
   , RedisStore
@@ -40,7 +41,8 @@ if(debug){
 
 // Change these at your will in the related file.
 // TODO:  Eventually add error messages to strings.js so nothing is hardcoded.
-var titles = require(__dirname+ '/utils/strings.js').titles
+var titles = strings.titles
+  , errors = strings.errors
 
 // Initialize Redis connection
 initRedis()
@@ -83,28 +85,28 @@ app.get('/dashboard', function(req, res){
   if(req.session.loggedIn){
     
     // Now check if the account has been verified
-    var verificationKey = req.session.username+":isVerified"
+    var verificationKey = req.session.username + ":isVerified"
     
     redisClient.get(verificationKey, function(err,data){
 
-      if(err) res.send('Redis error: ' + err)
+      if(err) res.send(errors.redisErrorPrefix+ err)
 
       else{
         if(data !== 'verified'){
 
-          config.title = 'Reconstrvct Page for Artists and Managers'
+          config.title = titles.defaultDashboardPage
           config.version = appConfig.VERSION
           config.debugging = debug
           config.auth = {
             isLegit: false,
-            message: "You have not verified your account. Check your email."
+            message: errors.unconfirmedAccount
           }
 
           res.render('dashboard', config)
           
         }
         else{
-          config.title = 'Reconstrvct Page for Artists and Managers'
+          config.title = titles.defaultDashboardPage
           config.version = appConfig.VERSION
           config.debugging = debug
           config.auth = {
@@ -113,10 +115,10 @@ app.get('/dashboard', function(req, res){
           res.render('dashboard', config)
           
         } // end else data verified
+        
       } // end else no error
 
     }) // end redisGet verificationKey
-
     
   }
   else{
@@ -145,7 +147,7 @@ app.post('/dashboard', function(req, res){
     
     // console.log( ('\n\n'+ data).red )
 
-    if(err) res.send('Redis error: ' + err)
+    if(err) res.send(errors.redisErrorPrefix + err)
 
     else{
       
@@ -154,13 +156,13 @@ app.post('/dashboard', function(req, res){
 
         var config = {}
 
-        config.title = titles.defaultRegistrationPage
+        config.title = titles.defaultDashboardPage
         config.version = appConfig.VERSION
         config.debugging = debug
         config.loggedIn = false
         config.auth = {
           isLegit: false,
-          message: "Username does not exist." // these should all be pulled out as well.
+          message: errors.usernameDoesNotExist 
         }
 
         res.render('dashboard', config)
@@ -174,13 +176,13 @@ app.post('/dashboard', function(req, res){
         
         var config = {}
 
-        config.title = titles.defaultRegistrationPage
+        config.title = titles.defaultDashboardPage
         config.version = appConfig.VERSION
         config.debugging = debug
         config.loggedIn = false
         config.auth = {
           isLegit: false,
-          message: "Incorrect Password."
+          message: errors.incorrectPassword
         }
         
         res.render('dashboard', config)
@@ -233,12 +235,12 @@ app.post('/register', function(req,res){
     // check Redis for username and email existence
     redisClient.get(username, function(err, data){
 
-      if(err) res.send('Redis error: ' + err)
+      if(err) res.send(errors.redisErrorPrefix+ err)
     
       if(data){
         // username exists!
         message.error = true
-        message.text = "Username exists."
+        message.text = errors.usernameExists
         
         config.title = titles.defaultRegistrationPage 
         config.version = appConfig.VERSION
@@ -255,39 +257,42 @@ app.post('/register', function(req,res){
     
         redisClient.get(email, function(err, data){
 
-          if(err) res.send('Redis error: ' + err) // this is bad and should be fixed
-    
-          if(data) {
-            // email exists!
-            message.error = true
-            message.text = "Email address exists."
+          if(err){
+            res.send(errors.redisErrorPrefix + err) // TODO: this is bad and should be fixed
           }
-    
-          if(err) console.log("Error: "+err.red) // this is bad and should be fixed
-          
-          // If there's something wrong, render the registration page with the error
-          if(message.error)
-          {
-            config.title = 'Reconstrvct Registration Page - '+message.text
-            config.version = appConfig.VERSION
-            config.debugging = debug
-            config.create = {
-              isLegit: !message.error,
-              message: message.text
+          else{
+            
+            if(data) {
+              // email exists!
+              message.error = true
+              message.text = errors.emailExists
             }
     
-            res.render('register', config)
-          }
-          else
-          {
-            // Add to redis
-            var hashedPassword = pwhash.generate(password)
+            // If there's something wrong, render the registration page with the error
+            if(message.error)
+            {
+              config.title = titles.defaultRegistrationPage + ' - '+ message.text
+              config.version = appConfig.VERSION
+              config.debugging = debug
+              config.create = {
+                isLegit: !message.error,
+                message: message.text
+              }
+    
+              res.render('register', config)
+            }
+            else
+            {
+              // Add to redis
+              var hashedPassword = pwhash.generate(password)
 
-            redisClient.set(username, hashedPassword, function(err,data){
-              setUsernameHandler(err,data,res,email,username)
-            })
+              redisClient.set(username, hashedPassword, function(err,data){
+                setUsernameHandler(err,data,res,email,username)
+              })
 
-          } // end else
+            } // end message.error else
+
+          } // end if(err) else
       
         }) // end email check
         
@@ -350,7 +355,7 @@ function setUsernameHandler(err,data,res,email,username){
     config.debugging = debug
     config.create = {
       isLegit: false,
-      message: "Error on the server! " + err.message
+      message: errors.redisPrefix + err.message
     }
 
     res.render('register', config)
@@ -377,7 +382,7 @@ function setEmailHandler(err,data,res,email,username){
     config.debugging = debug
     config.create = {
       isLegit: false,
-      message: "Error on the server! " +  err.message
+      message: errors.redisPrefix + err.message
     }
 
     res.render('register', config)
@@ -407,7 +412,7 @@ function setVerificationState(res,email,username,state){
       config.debugging = debug
       config.create = {
         isLegit: false,
-        message: "Error on the server! " + err.message
+        message: errors.redisPrefix + err.message
       }
 
       res.render('register', config)
@@ -448,7 +453,7 @@ function sendRegistrationEmail(res,email,username){
       config.debugging = debug
       config.create = {
         isLegit: false,
-        message: "Error on the server! " + err.message
+        message: errors.redisPrefix + err.message
       }
 
       res && res.render('register', config)
@@ -464,8 +469,7 @@ function sendRegistrationEmail(res,email,username){
             subject: '[Test] Click To Verify Your Account ✔',
             body: 'Nice work.  Click the link below to verify your account: '+ uniqueLink,
             html: '<p>Nice work.  Click the link below to verify your account:</p>'+
-                  '<p><a href="'+ uniqueLink + '">' + uniqueLink +'</a></p>'+
-                  '<p><i>Low Frequency, With Decency</i></p>',
+                  '<p><a href="'+ uniqueLink + '">' + uniqueLink +'</a></p>',
             debug: false,
             attachments:[]
           }
@@ -482,7 +486,7 @@ function sendRegistrationEmail(res,email,username){
           config.debugging = debug
           config.create = {
             isLegit: false,
-            message: "Error on the server! " + err.message
+            message: errors.redisPrefix + err.message
           }
 
           res && res.render('register', config)
@@ -507,12 +511,13 @@ function sendRegistrationEmail(res,email,username){
 } // end sendRegistrationEmail
 
 // Method that reads in the main stylus file and rewrites it with either the cdn or local (debug) prefix
-// for background images.
+// for background images.  It's pretty ugly so make it pretty.
 // @param {String}  the path to the production (single) stylus file
 // TODO:  Expose this to command line?  smoosh?
 function setStylusImagePrefix(productionFile){
 
-  fs.readFile(__dirname+appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
+  // Read in the stylus file that has the img prefix.
+  fs.readFile(__dirname + appConfig.STYLUS_FILE, 'UTF-8', function(err,data){
 
     // Now we update the path of the image prefix, local or CDN...
     if(err) throw err
@@ -562,7 +567,9 @@ function setStylusImagePrefix(productionFile){
 
 }
 
-// return a random string of length 16
+// Collisions may happen so use something else if truly necessary. I believe @substack wrote a module
+// for unique strings.
+// @return {String} of length 16
 function randomString(){
 	
 	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz"

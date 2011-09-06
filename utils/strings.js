@@ -9,6 +9,15 @@ exports.titles = {
   successRegistrationPage: "Registration Page - Success"
 }
 
+exports.errors = {
+    redisErrorPrefix: "Redis error: "
+  , unconfirmedAccount: "You have not verified your account. Check your email."
+  , usernameDoesNotExist: "Username does not exist."
+  , incorrectPassword: "Incorrect Password."
+  , usernameExists: "Username exists."
+  , emailExists: "Email address exists."
+}
+
 exports.foo = {
   bar: "baz"
 }
