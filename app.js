@@ -40,7 +40,6 @@ if(debug){
 }
 
 // Change these at your will in the related file.
-// TODO:  Eventually add error messages to strings.js so nothing is hardcoded.
 var titles = strings.titles
   , errors = strings.errors
 
