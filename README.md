@@ -90,6 +90,9 @@ Before you restart the app, you'll need to compress/concat the files with smoosh
 <pre>smoosh -c app.json</pre>
 
 
+or simply restart the app and if you're debugging, smoosh will be called programmatically and build with the compression flag set.
+
+
 This will create minified and concatenated CSS and JS files.
 
 

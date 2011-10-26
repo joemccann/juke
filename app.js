@@ -7,6 +7,8 @@ var express = require('express')
   , colors = require('colors')
   , pwhash = require('password-hash')
   , stylus = require('stylus')
+  , validator = require('validator')
+  , smoosh = require('smoosh')
   , emailer = require(__dirname + '/utils/email.js')
   , strings = require(__dirname + '/utils/strings.js')
   , debug
@@ -139,8 +141,9 @@ app.post('/dashboard', function(req, res){
   
   // TODO Sanitize this and send back errors if there's an issue.
   // Use the validator module (npm install validator)
-  var username = req.body.username.toLowerCase()  // numbers,letters only
-  var password = req.body.password                // numbers, letters only
+  var username = req.body.username.toLowerCase()  // numbers, letters only
+  var password = req.body.password                // numbers, letters, some special chars only
+  var config = {}
   
   redisClient.get(username, function(err, data){
     
@@ -152,8 +155,6 @@ app.post('/dashboard', function(req, res){
       
       // If no data, then no username exists
       if(!data) {
-
-        var config = {}
 
         config.title = titles.defaultDashboardPage
         config.version = appConfig.VERSION
@@ -173,8 +174,6 @@ app.post('/dashboard', function(req, res){
         req.session.username = username
         req.session.loggedIn = false
         
-        var config = {}
-
         config.title = titles.defaultDashboardPage
         config.version = appConfig.VERSION
         config.debugging = debug
@@ -550,7 +549,14 @@ function setStylusImagePrefix(productionFile){
                 
                 else{
                   console.log(productionFile.replace('.styl', '.css') + " file written successfully written for %s environment.", debug ? 'debugging' : 'production')
-                }
+
+                  if(!debug){
+                    // run smoosh for production
+                    smoosh.config('./app.json')
+                    smoosh.build('compressed')
+                  }
+
+                } // end else
 
               }) // end write style.css file
 
